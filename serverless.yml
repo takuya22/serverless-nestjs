@@ -1,0 +1,31 @@
+service: serverless-nestjs
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  region: ap-northeast-1
+
+plugins:
+  - serverless-layers
+custom:
+  serverless-layers:
+    layersDeploymentBucket: lambda-layers-deploy-20220825
+
+package:
+  individually: true
+  include:
+    - dist/**
+  exclude:
+    - '**'
+functions:
+  index:
+    handler: dist/index.handler
+    events:
+      - http:
+          cors: true
+          path: '/'
+          method: any
+      - http:
+          cors: true
+          path: '{proxy+}'
+          method: any
